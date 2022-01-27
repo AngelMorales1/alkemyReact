@@ -1,0 +1,21 @@
+body{
+    background: rgb(50, 50, 50) !important;
+    color: white !important;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500&display=swap');
+
+
+.navItem{
+    text-decoration: none;
+    color: white;
+    margin: auto 0;
+    &:hover {
+        color: grey
+    }
+}
+
+.max-w{
+    max-width: 500px;
+}

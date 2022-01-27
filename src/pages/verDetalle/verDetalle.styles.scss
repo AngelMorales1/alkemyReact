@@ -1,0 +1,23 @@
+.img{
+    width: 100%;
+    img{
+        max-width: 100%;
+        border-radius: 5px;
+    }
+}
+
+.texto{
+    text-align: center;
+    .detalles{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 20px 0;
+        
+    }
+}
+
+.row{
+    display: flex;
+    flex-direction: row !important;
+}
