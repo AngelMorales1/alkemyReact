@@ -1,4 +1,4 @@
-import {ADD_RECIPES} from "./recipes.action"
+import {ADD_RECIPES, REMOVE_RECIPES} from "./recipes.action"
 import swal from 'sweetalert';
 
 
@@ -15,7 +15,7 @@ export const recipesReducer = (state = initialState , action)=>{
             if(state.recipes.length>=4){
                 swal({
                     title: "Upps!",
-                    text: "no se puede mas",
+                    text: "Max 4 dishes",
                     icon: "error"
                   });
             }
@@ -43,6 +43,26 @@ export const recipesReducer = (state = initialState , action)=>{
                 }
             }
 
+        case REMOVE_RECIPES:
+            const newRecipes = state.recipes.filter(recipe => recipe.id !== action.payload.id)
+            
+            if (action.payload.vegan && state.veganCounter >=0) {
+                return {
+                    recipes:  newRecipes,
+                    veganCounter: state.veganCounter-1,
+                    notVeganCounter: state.notVeganCounter
+                }
+            }else if(!action.payload.vegan && state.notVeganCounter >=0){
+
+                return {
+                    recipes:  newRecipes,
+                    veganCounter: state.veganCounter,
+                    notVeganCounter: state.notVeganCounter-1
+                }
+            }else{
+                return state
+            }
+            
         default:
             return state
     }

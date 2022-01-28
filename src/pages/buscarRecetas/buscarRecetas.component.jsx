@@ -1,16 +1,17 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'
-import { Form, Button,Card,Alert,Row } from 'react-bootstrap';
+import { Form, Button,Card,Alert,Row, Spinner } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import axios from 'axios';
 
 import { recipesContext } from '../../store/store';
-import { addRecipes } from '../../store/recipes/recipes.action';
+import { addRecipes, removeRecipes } from '../../store/recipes/recipes.action';
+import swal from 'sweetalert';
 
 
 export const BuscarRecetas = ()=>{
 
-    const {dispatchRecipes} = useContext(recipesContext)
+    const {dispatchRecipes, recipesState:{recipes}} = useContext(recipesContext)
     const [recetas, setRecetas] = useState([])
 
     const navigate =  useNavigate();
@@ -31,18 +32,26 @@ export const BuscarRecetas = ()=>{
             receta: '',
         },
         validate,
-        onSubmit: values => {
+        onSubmit: (values,{setSubmitting}) => {
+            setSubmitting(true)
             axios.get(`${URL}complexSearch?apiKey=${API_KEY}&query=${values.receta}&addRecipeInformation=true`)
                 .then(function (response) {
                     setRecetas(response.data.results)
+                    setSubmitting(false)
                 })
                 .catch(function (error) {
                     console.log(error)
+                    swal({
+                        title: "Upps!",
+                        text: "Somwthing wrong happen... try again",
+                        icon: "error"
+                    })
+                    setSubmitting(false)
                 })
             },
       });
 
-    const {handleSubmit,handleChange,errors,handleBlur} = formik;
+    const {handleSubmit,handleChange,errors,handleBlur,isSubmitting} = formik;
 
     return(
         <div>
@@ -73,7 +82,9 @@ export const BuscarRecetas = ()=>{
             
             <div className="list mt-5">
                 <h3 className='mb-4'> Search results :</h3>
-                <Row xs={1} md={2} xxl={4}>
+                
+                <Row xs={1} md={2} lg={4} >
+                    {isSubmitting && <Spinner className='mx-auto' animation="border" />}
                     {recetas.map(receta=>(
 
                         <Card className="mt-3 mx-1 d-flex" key={receta.id} border="white" style={{background: "#212529", width: '18rem' }}>
@@ -90,9 +101,16 @@ export const BuscarRecetas = ()=>{
                                     className='mb-2 '
                                     variant="outline-light"
                                     onClick={()=>{ navigate(`/verDetalle/${receta.id}`) }}>See more</Button>
-                                    <Button 
-                                    variant="primary"
-                                    onClick={()=>dispatchRecipes(addRecipes(receta))}>Add to Menu</Button>
+                                    
+                                    {recipes.some(recipe => recipe.id == receta.id) ?
+                                        <Button 
+                                        variant="primary"
+                                        onClick={()=>dispatchRecipes(removeRecipes(receta))}>Remove from Menu</Button>
+                                    :
+                                        <Button 
+                                        variant="primary"
+                                        onClick={()=>dispatchRecipes(addRecipes(receta))}>Add to Menu</Button>
+                                    }
                                 </div>
                                     
                             </Card.Body>

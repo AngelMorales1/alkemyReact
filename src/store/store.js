@@ -5,10 +5,10 @@ export const recipesContext = createContext();
 
 export const UseRecipesContext = ({children})=>{
 
-    const [recipes, dispatchRecipes] = useReducer(recipesReducer, initialState)
+    const [recipesState, dispatchRecipes] = useReducer(recipesReducer, initialState)
 
     return(
-        <recipesContext.Provider value={{recipes,dispatchRecipes}}>
+        <recipesContext.Provider value={{recipesState,dispatchRecipes}}>
             {children}
         </recipesContext.Provider>
     )

@@ -7,8 +7,9 @@ export const List = ({header,propertys,values})=>{
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Property</th>
-                    <th>Value</th>
+                    {header.map((head,idx)=>{
+                        return(<th key={idx}>{head}</th>)
+                    })}
                 </tr>
             </thead>
             <tbody>
